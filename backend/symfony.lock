@@ -1,4 +1,30 @@
 {
+    "api-platform/core": {
+        "version": "2.6",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.5",
+            "ref": "05b57782a78c21a664a42055dc11cf1954ca36bb"
+        },
+        "files": [
+            "config/packages/api_platform.yaml",
+            "config/routes/api_platform.yaml",
+            "src/Entity/.gitignore"
+        ]
+    },
+    "dama/doctrine-test-bundle": {
+        "version": "7.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "4.0",
+            "ref": "56eaa387b5e48ebcc7c95a893b47dfa1ad51449c"
+        },
+        "files": [
+            "config/packages/test/dama_doctrine_test_bundle.yaml"
+        ]
+    },
     "doctrine/annotations": {
         "version": "1.13",
         "recipe": {
@@ -74,6 +100,12 @@
     "doctrine/sql-formatter": {
         "version": "1.1.2"
     },
+    "fakerphp/faker": {
+        "version": "v1.19.0"
+    },
+    "fig/link-util": {
+        "version": "1.2.0"
+    },
     "firebase/php-jwt": {
         "version": "v6.2.0"
     },
@@ -85,6 +117,18 @@
     },
     "myclabs/deep-copy": {
         "version": "1.11.0"
+    },
+    "nelmio/cors-bundle": {
+        "version": "2.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.5",
+            "ref": "6bea22e6c564fba3a1391615cada1437d0bde39c"
+        },
+        "files": [
+            "config/packages/nelmio_cors.yaml"
+        ]
     },
     "nikic/php-parser": {
         "version": "v4.13.2"
@@ -106,6 +150,9 @@
     },
     "phpspec/prophecy": {
         "version": "v1.15.0"
+    },
+    "phpstan/phpdoc-parser": {
+        "version": "1.5.1"
     },
     "phpunit/php-code-coverage": {
         "version": "9.2.15"
@@ -144,6 +191,9 @@
     },
     "psr/event-dispatcher": {
         "version": "1.0.0"
+    },
+    "psr/link": {
+        "version": "2.0.1"
     },
     "psr/log": {
         "version": "3.0.0"
@@ -208,6 +258,9 @@
             "config/packages/sensio_framework_extra.yaml"
         ]
     },
+    "symfony/asset": {
+        "version": "v6.0.7"
+    },
     "symfony/browser-kit": {
         "version": "v6.0.3"
     },
@@ -258,6 +311,9 @@
     },
     "symfony/event-dispatcher-contracts": {
         "version": "v3.0.1"
+    },
+    "symfony/expression-language": {
+        "version": "v6.0.8"
     },
     "symfony/filesystem": {
         "version": "v6.0.7"
@@ -402,6 +458,9 @@
     "symfony/security-http": {
         "version": "v6.0.8"
     },
+    "symfony/serializer": {
+        "version": "v6.0.9"
+    },
     "symfony/service-contracts": {
         "version": "v3.0.1"
     },
@@ -448,6 +507,9 @@
     "symfony/var-exporter": {
         "version": "v6.0.8"
     },
+    "symfony/web-link": {
+        "version": "v6.0.3"
+    },
     "symfony/yaml": {
         "version": "v6.0.3"
     },
@@ -459,5 +521,26 @@
     },
     "webmozart/assert": {
         "version": "1.10.0"
+    },
+    "willdurand/negotiation": {
+        "version": "3.1.0"
+    },
+    "zenstruck/assert": {
+        "version": "v1.0.1"
+    },
+    "zenstruck/callback": {
+        "version": "v1.4.2"
+    },
+    "zenstruck/foundry": {
+        "version": "1.19",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.10",
+            "ref": "37c2f894cc098ab4c08874b80cccc8e2f8de7976"
+        },
+        "files": [
+            "config/packages/zenstruck_foundry.yaml"
+        ]
     }
 }
