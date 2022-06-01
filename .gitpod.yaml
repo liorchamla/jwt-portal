@@ -2,7 +2,7 @@ tasks:
   - name: Frontend
     before: npm install -g @angular/cli
     init: cd frontend && npm install
-    command: cd frontend && ng serve
+    command: cd frontend && ng serve --host 0.0.0.0 --disable-host-check
 
   - name: Backend
     openMode: tab-after
