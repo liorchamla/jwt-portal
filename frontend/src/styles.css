@@ -1,2 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 @import url("bulma/css/bulma.min.css");
+
+body {
+  color: #333;
+  background-color: rgb(253, 247, 247);
+  min-height: 100vh;
+  scroll-behavior: smooth;
+}
