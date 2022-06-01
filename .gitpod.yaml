@@ -1,0 +1,17 @@
+tasks:
+  - name: Frontend
+    before: npm install -g @angular/cli
+    init: cd frontend && npm install
+    command: cd frontend && ng serve
+
+  - name: Backend
+    openMode: tab-after
+    init: cd backend && composer install
+    command: php -S 0.0.0.0:8000 -t backend/public/
+
+ports:
+  - port: 4200
+    onOpen: open-browser
+    visibility: public
+  - port: 8000
+    visibility: public
