@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { UserApi } from '../api/user-api';
 
 @Component({
   selector: 'navigation',
@@ -24,7 +25,10 @@ import { Component } from '@angular/core';
 
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-          <div class="navbar-item has-dropdown is-hoverable">
+          <div
+            class="navbar-item has-dropdown is-hoverable"
+            *ngIf="getUser() as user"
+          >
             <a class="navbar-link">
               <span class="icon">
                 <i class="fa-solid fa-book"></i>
@@ -33,10 +37,17 @@ import { Component } from '@angular/core';
             </a>
 
             <div class="navbar-dropdown">
-              <a class="navbar-item"> Application X </a>
-              <a class="navbar-item"> Application Y </a>
-              <hr class="navbar-divider" />
-              <a class="navbar-item"> Create a new application </a>
+              <a
+                class="navbar-item"
+                [routerLink]="['applications', app.id]"
+                *ngFor="let app of user.applications"
+              >
+                {{ app.title }}
+              </a>
+              <hr class="navbar-divider" *ngIf="user.applications.length > 0" />
+              <a class="navbar-item" routerLink="/applications/create">
+                Create a new application
+              </a>
             </div>
           </div>
         </div>
@@ -44,19 +55,25 @@ import { Component } from '@angular/core';
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary">
-                <span class="icon">
-                  <i class="fa-solid fa-user-plus"></i>
-                </span>
-                <span>Sign up</span>
-              </a>
-              <a class="button is-light">
-                <span class="icon">
-                  <i class="fa-solid fa-right-to-bracket"></i>
-                </span>
-                <span>Sign in</span>
-              </a>
-              <a class="button is-warning">
+              <ng-container *ngIf="!isAuthenticated()">
+                <a class="button is-primary" routerLink="/register">
+                  <span class="icon">
+                    <i class="fa-solid fa-user-plus"></i>
+                  </span>
+                  <span>Sign up</span>
+                </a>
+                <a class="button is-light" routerLink="/login">
+                  <span class="icon">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                  </span>
+                  <span>Sign in</span>
+                </a>
+              </ng-container>
+              <a
+                class="button is-warning"
+                *ngIf="isAuthenticated()"
+                (click)="handleLogout()"
+              >
                 <span class="icon">
                   <i class="fa-solid fa-right-from-bracket"></i>
                 </span>
@@ -69,4 +86,18 @@ import { Component } from '@angular/core';
     </nav>
   `,
 })
-export class NavbarComponent {}
+export class NavbarComponent {
+  constructor(private userApi: UserApi) {}
+
+  getUser() {
+    return this.userApi.getUserData();
+  }
+
+  isAuthenticated() {
+    return this.userApi.isAuthenticated();
+  }
+
+  handleLogout() {
+    this.userApi.logout();
+  }
+}

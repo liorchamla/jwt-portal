@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'register',
+  selector: 'login',
   template: `
-    <page title="Register and get started now!">
+    <page title="Log in !">
       <div class="columns">
         <div class="column">
           <p>
@@ -20,14 +20,14 @@ import { Component, OnInit } from '@angular/core';
           </p>
         </div>
         <div class="column">
-          <register-form></register-form>
+          <login-form></login-form>
         </div>
       </div>
     </page>
   `,
   styles: [],
 })
-export class RegisterComponent implements OnInit {
+export class LoginComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
