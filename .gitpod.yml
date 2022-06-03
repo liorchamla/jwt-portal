@@ -1,4 +1,12 @@
 tasks:
+  - name: Front Terminal
+    openMode: tab-before
+    command: cd frontend
+
+  - name: Back Terminal
+    openMode: tab-before
+    command: cd backend
+
   - name: Frontend
     before: npm install -g @angular/cli
     init: cd frontend && npm install
@@ -10,6 +18,8 @@ tasks:
     command: |
       php backend/bin/console d:d:d
       php backend/bin/console d:m:m --no-interaction
+      php backend/bin/console d:d:d --env=test
+      php backend/bin/console d:m:m --no-interaction --env=test
       php -S 0.0.0.0:8000 -t backend/public/
 
 ports:
