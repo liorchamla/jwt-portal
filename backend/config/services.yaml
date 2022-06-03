@@ -39,3 +39,11 @@ services:
       - name: "doctrine.orm.entity_listener"
         event: "prePersist"
         entity: 'App\Entity\Account'
+
+  App\Users\Authentication\CustomJWTListener:
+    tags:
+      - {
+          name: kernel.event_listener,
+          event: lexik_jwt_authentication.on_jwt_created,
+          method: onJWTCreated,
+        }

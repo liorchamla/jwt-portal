@@ -3,6 +3,7 @@
 namespace App\Test\Feature;
 
 use App\Factory\AccountFactory;
+use App\Factory\ApplicationFactory;
 use App\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Zenstruck\Foundry\Test\Factories;
@@ -50,7 +51,7 @@ class UserManagementTest extends WebTestCase
     {
         $client = static::createClient();
         // Given there is a user
-        UserFactory::createOne([
+        $user = UserFactory::createOne([
             'email' => 'mock@mail.com'
         ]);
 
@@ -62,5 +63,33 @@ class UserManagementTest extends WebTestCase
 
         // Then the registration is refused
         static::assertResponseStatusCodeSame(400);
+    }
+
+    /** @test */
+    public function it_should_login_user_with_good_credentials()
+    {
+        $client = static::createClient();
+
+        // Given we have a user
+        $user = UserFactory::createOne([
+            'email' => 'mock@mail.com',
+            'plainPassword' => 'password'
+        ]);
+
+        $applications = ApplicationFactory::createMany(4, [
+            "owner" => $user->object()
+        ]);
+
+
+        // When we try to login
+        $client->jsonRequest('POST', '/api/login', [
+            'email' => 'mock@mail.com',
+            'password' => 'password'
+        ]);
+
+        // Then we should receive a success
+        static::assertResponseIsSuccessful();
+        // And it should contain a JWT
+        static::assertNotNull(json_decode($client->getResponse()->getContent())->token);
     }
 }
