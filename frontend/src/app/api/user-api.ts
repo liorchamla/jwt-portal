@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { tap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 import jwtDecode from 'jwt-decode';
+import { Application, ApplicationApi } from './application-api';
 
 export type User = {
   username: string;
@@ -22,14 +23,29 @@ export type Credentials = Registration;
 export class UserApi {
   authToken?: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private applicationApi: ApplicationApi
+  ) {}
 
   getUserData() {
-    if (!this.authToken) {
+    if (!this.hasStoredToken()) {
       return null;
     }
 
-    return jwtDecode(this.authToken) as User;
+    return jwtDecode(this.authToken!) as User;
+  }
+
+  hasStoredToken() {
+    const token = window.localStorage.getItem('token');
+
+    if (token === null) {
+      return false;
+    }
+
+    this.authToken = token;
+
+    return true;
   }
 
   isAuthenticated() {
@@ -50,12 +66,14 @@ export class UserApi {
   logout() {
     window.localStorage.removeItem('token');
 
+    this.applicationApi.clearCache();
+
     this.authToken = undefined;
   }
 
   register(registration: Registration) {
     return this.http.post(
-      'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu46.gitpod.io/api/register',
+      'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu47.gitpod.io/api/register',
       registration
     );
   }
@@ -63,14 +81,15 @@ export class UserApi {
   login(credentials: Credentials) {
     return this.http
       .post<{ token: string }>(
-        'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu46.gitpod.io/api/login',
+        'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu47.gitpod.io/api/login',
         credentials
       )
       .pipe(
         tap((data: { token: string }) => {
           this.authToken = data.token;
           window.localStorage.setItem('token', data.token);
-        })
+        }),
+        switchMap((_) => this.applicationApi.findAll())
       );
   }
 }

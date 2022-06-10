@@ -16,6 +16,7 @@ import { LoginFormComponent } from './pages/login/login-form.component';
 import { CreateApplicationComponent } from './pages/applications/create-application/create-application.component';
 import { ApplicationFormComponent } from './pages/applications/create-application/application-form.component';
 import { JwtInterceptor } from './api/jwt-interceptor';
+import { RoutesFormComponent } from './pages/applications/create-application/routes-form.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { JwtInterceptor } from './api/jwt-interceptor';
     LoginFormComponent,
     CreateApplicationComponent,
     ApplicationFormComponent,
+    RoutesFormComponent,
   ],
   imports: [
     BrowserModule,

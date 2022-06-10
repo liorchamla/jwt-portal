@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ApplicationApi } from '../api/application-api';
 import { UserApi } from '../api/user-api';
 
 @Component({
@@ -39,12 +40,12 @@ import { UserApi } from '../api/user-api';
             <div class="navbar-dropdown">
               <a
                 class="navbar-item"
-                [routerLink]="['applications', app.id]"
-                *ngFor="let app of user.applications"
+                [routerLink]="['/applications', app.id]"
+                *ngFor="let app of getApplications()"
               >
                 {{ app.title }}
               </a>
-              <hr class="navbar-divider" *ngIf="user.applications.length > 0" />
+              <hr class="navbar-divider" *ngIf="getApplications().length > 0" />
               <a class="navbar-item" routerLink="/applications/create">
                 Create a new application
               </a>
@@ -87,10 +88,17 @@ import { UserApi } from '../api/user-api';
   `,
 })
 export class NavbarComponent {
-  constructor(private userApi: UserApi) {}
+  constructor(
+    private userApi: UserApi,
+    private applicationApi: ApplicationApi
+  ) {}
 
   getUser() {
     return this.userApi.getUserData();
+  }
+
+  getApplications() {
+    return this.applicationApi.getApplicationsData();
   }
 
   isAuthenticated() {

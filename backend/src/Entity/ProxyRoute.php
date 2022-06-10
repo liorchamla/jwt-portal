@@ -29,6 +29,7 @@ class ProxyRoute
     private $application;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['application:read'])]
     private $clientPattern;
 
     #[PrePersist]

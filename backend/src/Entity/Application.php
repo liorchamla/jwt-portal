@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints;
 
 #[ORM\Entity(repositoryClass: ApplicationRepository::class)]
@@ -35,12 +36,16 @@ class Application
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'applications')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups('application:read')]
     private $owner;
 
-    #[ORM\OneToMany(mappedBy: 'application', targetEntity: ProxyRoute::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'application', targetEntity: ProxyRoute::class, orphanRemoval: true, cascade: ["persist"])]
     #[Groups(['application:read', 'account:read'])]
     private $routes;
+
+    public function getSerializedRoutes()
+    {
+        return $this->routes->toArray();
+    }
 
     #[ORM\OneToMany(mappedBy: 'application', targetEntity: Account::class, orphanRemoval: true)]
     #[Groups('application:read')]
