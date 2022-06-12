@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Test\Feature;
+namespace App\Tests\Feature;
 
 use App\Entity\Account;
 use App\Factory\AccountFactory;
@@ -9,15 +9,13 @@ use App\Factory\ProxyRouteFactory;
 use App\Http\JWT\Authentication;
 use App\ProxyRequest\ProxyHttpClient;
 use App\SubRequest\HttpClient;
+use App\Tests\WebTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Zenstruck\Foundry\Test\Factories;
 
 class ProxyRequestTest extends WebTestCase
 {
-    use Factories;
-
     private function makeHttpClientMock()
     {
         /** @var MockObject */
@@ -32,8 +30,6 @@ class ProxyRequestTest extends WebTestCase
     /** @test */
     public function it_should_retrieve_remote_api_data()
     {
-        $client = static::createClient();
-
         // Mocking HttpClient to make sure no request really gets out
         $mock = $this->makeHttpClientMock();
         $mock->expects($this->once())->method('makeApiRequest')->willReturn(new JsonResponse(['customers' => 12], 200));
@@ -42,7 +38,7 @@ class ProxyRequestTest extends WebTestCase
         $account = AccountFactory::createOne();
 
         // When we call our proxy
-        $client->jsonRequest("GET", "/a/{$account->getApplication()->getId()}/u/mock/pattern/12");
+        $this->client->jsonRequest("GET", "/a/{$account->getApplication()->getId()}/u/mock/pattern/12");
 
         // Then the response should be successful
         static::assertResponseIsSuccessful();
@@ -51,9 +47,7 @@ class ProxyRequestTest extends WebTestCase
     /** @test */
     public function it_should_deny_access_for_a_protected_proxy_route()
     {
-        $client = static::createClient();
-
-        $mock = $this->makeHttpClientMock();
+        $this->makeHttpClientMock();
 
         // Given we have an application
         $app = ApplicationFactory::createOne();
@@ -65,7 +59,7 @@ class ProxyRequestTest extends WebTestCase
 
         // And we have no account
         // When we try to reach proxy api
-        $client->jsonRequest('GET', '/a/' . $app->getId() . '/u/' . $route->getClientPattern());
+        $this->client->jsonRequest('GET', '/a/' . $app->getId() . '/u/' . $route->getClientPattern());
 
         // Then we should have a 401 because we have not sent a JWT 
         static::assertResponseStatusCodeSame(401);
@@ -74,9 +68,7 @@ class ProxyRequestTest extends WebTestCase
     /** @test */
     public function it_should_deny_access_to_an_unknown_application()
     {
-        $client = static::createClient();
-
-        $client->jsonRequest("GET", "/a/666/mock/pattern/12");
+        $this->client->jsonRequest("GET", "/a/666/mock/pattern/12");
 
         static::assertResponseStatusCodeSame(404);
     }
@@ -84,8 +76,6 @@ class ProxyRequestTest extends WebTestCase
     /** @test */
     public function it_should_retrieve_remote_api_data_if_route_is_protected_and_we_provide_jwt()
     {
-        $client = static::createClient();
-
         // Mocking HttpClient to make sure no request really gets out
         $mock = $this->makeHttpClientMock();
         $mock->expects($this->once())->method('makeApiRequest')->willReturn(new JsonResponse(['customers' => 12], 200));
@@ -99,7 +89,7 @@ class ProxyRequestTest extends WebTestCase
         $jwt = $authentication->encode($account);
 
         // When we call our proxy
-        $client->jsonRequest("GET", "/a/{$account->getApplication()->getId()}/u/mock/pattern/12", [], [
+        $this->client->jsonRequest("GET", "/a/{$account->getApplication()->getId()}/u/mock/pattern/12", [], [
             'AUTHORIZATION' => "Bearer $jwt"
         ]);
 

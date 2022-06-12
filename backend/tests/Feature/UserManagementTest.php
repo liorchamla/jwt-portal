@@ -1,25 +1,22 @@
 <?php
 
-namespace App\Test\Feature;
+namespace App\Tests\Feature;
 
 use App\Factory\AccountFactory;
 use App\Factory\ApplicationFactory;
 use App\Factory\UserFactory;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\WebTestCase;
 use Zenstruck\Foundry\Test\Factories;
 
 class UserManagementTest extends WebTestCase
 {
-    use Factories;
-
     /** @test */
     public function it_should_allow_users_to_register()
     {
-        $client = static::createClient();
         // Given there are no users
 
         // When we call /api/register
-        $client->jsonRequest("POST", "/api/register", [
+        $this->client->jsonRequest("POST", "/api/register", [
             "email" => "mock@mail.com",
             "password" => "password"
         ]);
@@ -33,11 +30,10 @@ class UserManagementTest extends WebTestCase
     /** @test */
     public function it_should_validate_registration_data()
     {
-        $client = static::createClient();
         // Given there are no users
 
         // When we call /api/register
-        $client->jsonRequest("POST", "/api/register", [
+        $this->client->jsonRequest("POST", "/api/register", [
             "email" => "mockmail.com",
             "password" => ""
         ]);
@@ -49,14 +45,11 @@ class UserManagementTest extends WebTestCase
     /** @test */
     public function it_should_validate_email_uniqueness()
     {
-        $client = static::createClient();
         // Given there is a user
-        $user = UserFactory::createOne([
-            'email' => 'mock@mail.com'
-        ]);
+        $user = $this->makeUser(false, "mock@mail.com", "MOCK_PASSWORD");
 
         // When we call /api/register with the same email
-        $client->jsonRequest("POST", "/api/register", [
+        $this->client->jsonRequest("POST", "/api/register", [
             "email" => "mock@mail.com",
             "password" => "password"
         ]);
@@ -68,21 +61,17 @@ class UserManagementTest extends WebTestCase
     /** @test */
     public function it_should_login_user_with_good_credentials()
     {
-        $client = static::createClient();
 
         // Given we have a user
-        $user = UserFactory::createOne([
-            'email' => 'mock@mail.com',
-            'plainPassword' => 'password'
-        ]);
+        $user = $this->makeUser();
 
-        $applications = ApplicationFactory::createMany(4, [
+        ApplicationFactory::createMany(4, [
             "owner" => $user->object()
         ]);
 
 
         // When we try to login
-        $client->jsonRequest('POST', '/api/login', [
+        $this->client->jsonRequest('POST', '/api/login', [
             'email' => 'mock@mail.com',
             'password' => 'password'
         ]);
@@ -90,6 +79,6 @@ class UserManagementTest extends WebTestCase
         // Then we should receive a success
         static::assertResponseIsSuccessful();
         // And it should contain a JWT
-        static::assertNotNull(json_decode($client->getResponse()->getContent())->token);
+        static::assertNotNull(json_decode($this->client->getResponse()->getContent())->token);
     }
 }

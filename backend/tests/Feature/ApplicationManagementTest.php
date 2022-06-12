@@ -1,27 +1,21 @@
 <?php
 
-namespace App\Test\Feature;
+namespace App\Tests\Feature;
 
 use App\Factory\ApplicationFactory;
 use App\Factory\ProxyRouteFactory;
-use App\Factory\UserFactory;
 use App\Repository\ApplicationRepository;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Zenstruck\Foundry\Test\Factories;
+use App\Tests\WebTestCase;
 
 class ApplicationManagementTest extends WebTestCase
 {
-    use Factories;
 
     /** @test */
     public function it_should_deny_application_creation_if_unauthenticated()
     {
         // Given we have no user
-
         // When we try to create an application
-        $client = $this->createClient();
-
-        $client->jsonRequest('POST', '/api/applications', [
+        $this->client->jsonRequest('POST', '/api/applications', [
             'title' => 'MOCK_APPLICATION',
             'description' => 'MOCK_DESCRIPTION',
             'baseUrl' => 'https://mockurl.io'
@@ -34,19 +28,13 @@ class ApplicationManagementTest extends WebTestCase
     /** @test */
     public function it_should_allow_application_creation_if_authenticated()
     {
-        $client = $this->createClient();
-
         // Given there is one user
-        $user = UserFactory::createOne([
-            'email' => 'mock@mail.com',
-            'password' => 'mock_password'
-        ]);
-
         // And he is logged in
-        $client->loginUser($user->object());
+        $this->makeUser(true);
+
 
         // When we try to create an application
-        $client->jsonRequest('POST', '/api/applications', [
+        $this->client->jsonRequest('POST', '/api/applications', [
             'title' => 'MOCK_APPLICATION',
             'description' => 'MOCK_DESCRIPTION',
             'baseUrl' => 'https://mockurl.io',
@@ -64,7 +52,7 @@ class ApplicationManagementTest extends WebTestCase
 
         // Then the application should exist
         /** @var ApplicationRepository */
-        $repository = $client->getContainer()->get(ApplicationRepository::class);
+        $repository = $this->client->getContainer()->get(ApplicationRepository::class);
         $application = $repository->findOneBy(['title' => 'MOCK_APPLICATION']);
         static::assertNotNull($application);
 
@@ -78,19 +66,12 @@ class ApplicationManagementTest extends WebTestCase
     /** @test */
     public function it_should_validate_application_data()
     {
-        $client = $this->createClient();
-
         // Given there is one user
-        $user = UserFactory::createOne([
-            'email' => 'mock@mail.com',
-            'password' => 'mock_password'
-        ]);
-
         // And he is logged in
-        $client->loginUser($user->object());
+        $this->makeUser(true);
 
         // When we try to create an application
-        $client->jsonRequest('POST', '/api/applications', [
+        $this->client->jsonRequest('POST', '/api/applications', [
             'description' => '',
             'baseUrl' => 'mock_fail'
         ]);
@@ -102,22 +83,19 @@ class ApplicationManagementTest extends WebTestCase
     /** @test */
     public function it_should_list_applications_for_current_user()
     {
-        $client = static::createClient();
-
         // Given we have a current user
         // And he has some applications
-        $user = UserFactory::createOne();
-        $applications = ApplicationFactory::createMany(5, [
+        $user = $this->makeUser(true);
+
+        ApplicationFactory::createMany(5, [
             'owner' => $user->object()
         ]);
 
-        $client->loginUser($user->object());
-
         // When we call /api/applications in GET
-        $client->jsonRequest("GET", "/api/applications");
+        $this->client->jsonRequest("GET", "/api/applications");
 
         // Then we should receive applications
-        $data = json_decode($client->getResponse()->getContent());
+        $data = json_decode($this->client->getResponse()->getContent());
 
         static::assertResponseIsSuccessful();
         static::assertIsArray($data);
@@ -125,23 +103,43 @@ class ApplicationManagementTest extends WebTestCase
     }
 
     /** @test */
+    public function it_should_get_an_application_with_id()
+    {
+
+        // Given we have a current user
+        // And he has some applications
+        $user = $this->makeUser(true);
+
+        $application = ApplicationFactory::createOne([
+            'owner' => $user->object()
+        ]);
+
+        // When we call /api/applications in GET
+        $this->client->jsonRequest("GET", "/api/applications/" . $application->getId());
+
+        // Then we should receive applications
+        json_decode($this->client->getResponse()->getContent());
+
+        static::assertResponseIsSuccessful();
+    }
+
+    /** @test */
     public function it_should_allow_application_modifications()
     {
         // Given we have a user and an application
-        $client = static::createClient();
 
-        $user = UserFactory::createOne();
+        $user = $this->makeUser(true);
+
         $application = ApplicationFactory::createOne([
             'owner' => $user->object(),
         ]);
-        $routes = ProxyRouteFactory::createMany(4, [
+
+        ProxyRouteFactory::createMany(4, [
             'application' => $application->object()
         ]);
 
-        $client->loginUser($user->object());
-
         // When we call /api/applications/{id} in PUT
-        $client->jsonRequest("PUT", "/api/applications/" . $application->getId(), [
+        $this->client->jsonRequest("PUT", "/api/applications/" . $application->getId(), [
             "title" => "MOCK_TITLE",
             "description" => "MOCK_DESCRIPTION",
             "baseUrl" => "MOCK_URL",
@@ -158,5 +156,24 @@ class ApplicationManagementTest extends WebTestCase
         static::assertEquals("MOCK_TITLE", $application->getTitle());
         static::assertEquals("MOCK_DESCRIPTION", $application->getDescription());
         static::assertEquals("MOCK_URL", $application->getBaseUrl());
+    }
+
+    /** @test */
+    public function it_should_allow_application_delete()
+    {
+        // Given we have a user and an application
+        $user = $this->makeUser(true);
+        $application = ApplicationFactory::createOne([
+            'owner' => $user->object(),
+        ]);
+
+        $id = $application->getId();
+
+        // When we call /api/applications/{id} in PUT
+        $this->client->jsonRequest("DELETE", "/api/applications/" . $application->getId());
+
+        // Then the application and routes should have been updated
+        static::assertResponseIsSuccessful();
+        static::assertCount(0, ApplicationFactory::findBy(['id' => $id]));
     }
 }

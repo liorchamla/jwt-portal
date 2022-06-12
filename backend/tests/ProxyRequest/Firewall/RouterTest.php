@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Test\ProxyReques\Firewall;
+namespace App\Tests\ProxyReques\Firewall;
 
 use App\Factory\ApplicationFactory;
 use App\Factory\ProxyRouteFactory;

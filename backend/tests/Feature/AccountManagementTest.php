@@ -1,27 +1,23 @@
 <?php
 
-namespace App\Test\Feature;
+namespace App\Tests\Feature;
 
 use App\Factory\AccountFactory;
 use App\Factory\ApplicationFactory;
 use App\Repository\AccountRepository;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\WebTestCase;
 use Zenstruck\Foundry\Test\Factories;
 
 class AccountManagementTest extends WebTestCase
 {
-    use Factories;
-
     /** @test */
     public function it_should_allow_consumers_to_create_accounts_on_an_application_level()
     {
-        $client = $this->createClient();
-
         // Given we have an existing application
         $app = ApplicationFactory::createOne()->object();
 
         // When a consumer wants to create an account
-        $client->jsonRequest('POST', '/a/' . $app->getId() . '/register', [
+        $this->client->jsonRequest('POST', '/a/' . $app->getId() . '/register', [
             'email' => 'mock@mail.com',
             'password' => 'password'
         ]);
@@ -39,11 +35,9 @@ class AccountManagementTest extends WebTestCase
     /** @test */
     public function it_should_disallow_consumers_to_create_accounts_on_an_unexisting_application()
     {
-        $client = $this->createClient();
-
         // Given we have no application
         // When a consumer wants to create an account
-        $client->jsonRequest('POST', '/a/666/register', [
+        $this->client->jsonRequest('POST', '/a/666/register', [
             'email' => 'mock@mail.com',
             'password' => 'password'
         ]);
@@ -55,13 +49,11 @@ class AccountManagementTest extends WebTestCase
     /** @test */
     public function it_should_validate_account_data()
     {
-        $client = $this->createClient();
-
         // Given we have an application
         $app = ApplicationFactory::createOne();
 
         // When a consumer wants to create an account
-        $client->jsonRequest('POST', '/a/' . $app->getId() . '/register', [
+        $this->client->jsonRequest('POST', '/a/' . $app->getId() . '/register', [
             'email' => 'mockmail.com',
             'password' => ''
         ]);
@@ -73,8 +65,6 @@ class AccountManagementTest extends WebTestCase
     /** @test */
     public function it_should_allow_existing_account_to_login()
     {
-        $client = $this->createClient();
-
         // Given we have an account
         $account = AccountFactory::createOne([
             'email' => 'mock@mail.com',
@@ -82,7 +72,7 @@ class AccountManagementTest extends WebTestCase
         ]);
 
         // When a consumer wants to login
-        $client->jsonRequest('POST', '/a/' . $account->getApplication()->getId() . '/login', [
+        $this->client->jsonRequest('POST', '/a/' . $account->getApplication()->getId() . '/login', [
             'email' => 'mock@mail.com',
             'password' => 'password'
         ]);
@@ -91,15 +81,13 @@ class AccountManagementTest extends WebTestCase
         static::assertResponseStatusCodeSame(200);
 
         // And the content should contain a JWT Token
-        $json = json_decode($client->getResponse()->getContent());
+        $json = json_decode($this->client->getResponse()->getContent());
         static::assertNotNull($json->token);
     }
 
     /** @test */
     public function it_should_deny_access_to_bad_credentials()
     {
-        $client = $this->createClient();
-
         // Given we have an account
         $account = AccountFactory::createOne([
             'email' => 'mock@mail.com',
@@ -107,7 +95,7 @@ class AccountManagementTest extends WebTestCase
         ]);
 
         // When a consumer wants to login with bad credentials
-        $client->jsonRequest('POST', '/a/' . $account->getApplication()->getId() . '/login', [
+        $this->client->jsonRequest('POST', '/a/' . $account->getApplication()->getId() . '/login', [
             'email' => 'mockito@mail.com',
             'password' => 'password'
         ]);
@@ -116,15 +104,13 @@ class AccountManagementTest extends WebTestCase
         static::assertResponseStatusCodeSame(401);
 
         // And the content should contain a JWT Token
-        $json = json_decode($client->getResponse()->getContent());
+        $json = json_decode($this->client->getResponse()->getContent());
         static::assertEquals("Bad credentials", $json->error);
     }
 
     /** @test */
     public function it_should_validate_credentials()
     {
-        $client = $this->createClient();
-
         // Given we have an account
         $account = AccountFactory::createOne([
             'email' => 'mock@mail.com',
@@ -132,7 +118,7 @@ class AccountManagementTest extends WebTestCase
         ]);
 
         // When a consumer wants to login with bad credentials
-        $client->jsonRequest('POST', '/a/' . $account->getApplication()->getId() . '/login', [
+        $this->client->jsonRequest('POST', '/a/' . $account->getApplication()->getId() . '/login', [
             'email' => 'mockmail.com',
             'password' => ''
         ]);

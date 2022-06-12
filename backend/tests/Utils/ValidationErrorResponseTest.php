@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Test\Utils;
+namespace App\Tests\Utils;
 
 use App\Http\ViolationsToResponse;
 use App\Http\ViolationsToResponseMapper;

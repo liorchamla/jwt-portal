@@ -1,26 +1,22 @@
 <?php
 
-namespace App\Test\Feature;
+namespace App\Tests\Feature;
 
 use App\Factory\ApplicationFactory;
 use App\Factory\UserFactory;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Zenstruck\Foundry\Test\Factories;
+use App\Tests\WebTestCase;
 
 class RoutesManagementTest extends WebTestCase
 {
-    use Factories;
-
     /** @test */
     public function it_should_disable_routes_creation_when_unauthenticated()
     {
-        $client = self::createClient();
         // Given there is no user and you are not authenticated
         // And there is an application
         $app = ApplicationFactory::createOne();
 
         // When you try to create a ProxyRoute
-        $client->jsonRequest('POST', '/api/applications/' . $app->getId() . '/routes', [
+        $this->client->jsonRequest('POST', '/api/applications/' . $app->getId() . '/routes', [
             'pattern' => '/mock/pattern',
             'clientPattern' => '/client/pattern'
         ]);
@@ -32,15 +28,14 @@ class RoutesManagementTest extends WebTestCase
     /** @test */
     public function it_should_disable_routes_creation_when_application_is_not_our()
     {
-        $client = self::createClient();
         // Given there is a user and you are authenticated
-        $client->loginUser(UserFactory::createOne()->object());
+        $this->client->loginUser(UserFactory::createOne()->object());
 
         // And there is an application
         $app = ApplicationFactory::createOne();
 
         // When you try to create a ProxyRoute
-        $client->jsonRequest('POST', '/api/applications/' . $app->getId() . '/routes', [
+        $this->client->jsonRequest('POST', '/api/applications/' . $app->getId() . '/routes', [
             'pattern' => '/mock/pattern',
             'clientPattern' => '/client/pattern'
         ]);
@@ -52,16 +47,14 @@ class RoutesManagementTest extends WebTestCase
     /** @test */
     public function it_should_create_route_if_authenticated_and_application_is_our()
     {
-        $client = self::createClient();
         // Given there is a user and you are authenticated
-        $user = UserFactory::createOne()->object();
-        $client->loginUser($user);
+        $user = $this->makeUser(true);
 
         // And there is an application
         $app = ApplicationFactory::createOne(['owner' => $user]);
 
         // When you try to create a ProxyRoute
-        $client->jsonRequest('POST', '/api/applications/' . $app->getId() . '/routes', [
+        $this->client->jsonRequest('POST', '/api/applications/' . $app->getId() . '/routes', [
             'pattern' => '/mock/pattern',
         ]);
 
