@@ -32,6 +32,9 @@ class ProxyRoute
     #[Groups(['application:read'])]
     private $clientPattern;
 
+    #[ORM\Column(type: 'boolean')]
+    private $isProtected = false;
+
     #[PrePersist]
     #[PreUpdate]
     public function lifeCycleCallbacks()
@@ -78,6 +81,18 @@ class ProxyRoute
     public function setClientPattern(string $clientPattern): self
     {
         $this->clientPattern = $clientPattern;
+
+        return $this;
+    }
+
+    public function isProtected(): ?bool
+    {
+        return $this->isProtected;
+    }
+
+    public function setIsProtected(bool $isProtected): self
+    {
+        $this->isProtected = $isProtected;
 
         return $this;
     }

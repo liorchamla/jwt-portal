@@ -41,7 +41,6 @@ final class ApplicationFactory extends ModelFactory
             // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
             'title' => self::faker()->text(),
             'description' => self::faker()->text(),
-            'baseUrl' => 'https://' . self::faker()->domainName() . '/api',
             'owner' => UserFactory::createOne()
         ];
     }

@@ -44,8 +44,7 @@ class UpdateApplication
         }
 
         $application->setTitle($updates->getTitle())
-            ->setDescription($updates->getDescription())
-            ->setBaseUrl($updates->getBaseUrl());
+            ->setDescription($updates->getDescription());
 
         foreach ($updates->getRoutes() as $route) {
             $application->addRoute($route);

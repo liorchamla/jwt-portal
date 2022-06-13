@@ -25,17 +25,26 @@ class RunProxyRequest
     #[Route("/a/{id}/u/{url}", name: "proxy_request_run", requirements: ['url' => '.+'])]
     public function __invoke(Request $request, Application $application = null, string $url = '')
     {
+        $url = '/' . $url;
+
         if (!$application) {
             throw new HttpException(404, "No application found");
         }
 
-        if ($this->router->isProtected($url, $application)) {
-            // We have to check for JWT Token
-            if (!$this->auth->authenticate($request, $application)) {
-                throw new HttpException(401, "JWT Not found or invalid");
-            }
+        $routeParams = $this->router->getRouteObject($url, $application);
+
+        if (!$routeParams) {
+            throw new HttpException(404, "Resource not found");
         }
 
-        return $this->httpClient->makeApiRequest($application->getBaseUrl() . $url, $request->getMethod());
+        $proxyRoute = $routeParams['object'];
+
+        if ($proxyRoute->isProtected() && !$this->auth->authenticate($request, $application)) {
+            throw new HttpException(401, "JWT Not found or invalid");
+        }
+
+        $realUrl = $this->router->makeUrlWithParams($application, $proxyRoute, $routeParams);
+
+        return $this->httpClient->makeApiRequest($realUrl, $request->getMethod());
     }
 }

@@ -142,7 +142,6 @@ class ApplicationManagementTest extends WebTestCase
         $this->client->jsonRequest("PUT", "/api/applications/" . $application->getId(), [
             "title" => "MOCK_TITLE",
             "description" => "MOCK_DESCRIPTION",
-            "baseUrl" => "MOCK_URL",
             "routes" => [
                 [
                     "pattern" => "MOCK_PATTERN",
@@ -155,7 +154,6 @@ class ApplicationManagementTest extends WebTestCase
         static::assertCount(1, $application->getRoutes());
         static::assertEquals("MOCK_TITLE", $application->getTitle());
         static::assertEquals("MOCK_DESCRIPTION", $application->getDescription());
-        static::assertEquals("MOCK_URL", $application->getBaseUrl());
     }
 
     /** @test */

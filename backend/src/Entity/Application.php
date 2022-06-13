@@ -29,10 +29,6 @@ class Application
     #[Constraints\NotBlank()]
     private $description;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['application:read', 'account:read'])]
-    #[Constraints\NotBlank()]
-    private $baseUrl;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'applications')]
     #[ORM\JoinColumn(nullable: false)]
@@ -87,18 +83,6 @@ class Application
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getBaseUrl(): ?string
-    {
-        return $this->baseUrl;
-    }
-
-    public function setBaseUrl(string $baseUrl): self
-    {
-        $this->baseUrl = $baseUrl;
 
         return $this;
     }

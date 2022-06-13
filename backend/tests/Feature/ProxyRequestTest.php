@@ -8,14 +8,13 @@ use App\Factory\ApplicationFactory;
 use App\Factory\ProxyRouteFactory;
 use App\Http\JWT\Authentication;
 use App\ProxyRequest\ProxyHttpClient;
-use App\SubRequest\HttpClient;
 use App\Tests\WebTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Zenstruck\Foundry\Test\Factories;
 
 class ProxyRequestTest extends WebTestCase
 {
+
     private function makeHttpClientMock()
     {
         /** @var MockObject */
@@ -28,14 +27,28 @@ class ProxyRequestTest extends WebTestCase
 
 
     /** @test */
-    public function it_should_retrieve_remote_api_data()
+    public function it_should_retrieve_remote_api_data_if_route_exists_and_is_not_protected()
     {
         // Mocking HttpClient to make sure no request really gets out
         $mock = $this->makeHttpClientMock();
-        $mock->expects($this->once())->method('makeApiRequest')->willReturn(new JsonResponse(['customers' => 12], 200));
+        $mock->expects($this->once())
+            ->method('makeApiRequest')
+            ->with('https://mockapi.io/real/pattern/12')
+            ->willReturn(new JsonResponse(['customers' => 12], 200));
 
         // Given we have an account
         $account = AccountFactory::createOne();
+
+        $application = ApplicationFactory::createOne([
+            'accounts' => [$account]
+        ]);
+
+        $route = ProxyRouteFactory::createOne([
+            'application' => $application,
+            'isProtected' => false,
+            'clientPattern' => '/mock/pattern/{id}',
+            'pattern' => 'https://mockapi.io/real/pattern/{id}'
+        ]);
 
         // When we call our proxy
         $this->client->jsonRequest("GET", "/a/{$account->getApplication()->getId()}/u/mock/pattern/12");
@@ -54,12 +67,15 @@ class ProxyRequestTest extends WebTestCase
 
         // And it has a protected route :
         $route = ProxyRouteFactory::createOne([
-            'application' => $app
+            'application' => $app,
+            'clientPattern' => '/mock/{id}',
+            'pattern' => 'https://mockapi.io/real/{id}',
+            'isProtected' => true
         ]);
 
         // And we have no account
         // When we try to reach proxy api
-        $this->client->jsonRequest('GET', '/a/' . $app->getId() . '/u/' . $route->getClientPattern());
+        $this->client->jsonRequest('GET', '/a/' . $app->getId() . '/u/mock/12');
 
         // Then we should have a 401 because we have not sent a JWT 
         static::assertResponseStatusCodeSame(401);
@@ -84,13 +100,20 @@ class ProxyRequestTest extends WebTestCase
         /** @var Account */
         $account = AccountFactory::createOne()->object();
 
+        $route = ProxyRouteFactory::createOne([
+            'clientPattern' => '/mock/pattern/{id}',
+            'pattern' => 'https://mockapi.io/real/{id}',
+            'isProtected' => true,
+            'application' => $account->getApplication()
+        ]);
+
         // And we have the matching JWT
         $authentication = new Authentication;
         $jwt = $authentication->encode($account);
 
         // When we call our proxy
         $this->client->jsonRequest("GET", "/a/{$account->getApplication()->getId()}/u/mock/pattern/12", [], [
-            'AUTHORIZATION' => "Bearer $jwt"
+            'HTTP_AUTHORIZATION' => "Bearer $jwt",
         ]);
 
         // Then the response should be successful
