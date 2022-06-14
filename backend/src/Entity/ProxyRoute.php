@@ -39,7 +39,7 @@ class ProxyRoute
     private $method = "GET";
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $description;
+    private $description = "";
 
     #[PrePersist]
     #[PreUpdate]

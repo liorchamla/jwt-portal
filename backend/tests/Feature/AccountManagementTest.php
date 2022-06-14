@@ -2,10 +2,13 @@
 
 namespace App\Tests\Feature;
 
+use App\Entity\Account;
 use App\Factory\AccountFactory;
 use App\Factory\ApplicationFactory;
+use App\Http\JWT\Authentication;
 use App\Repository\AccountRepository;
 use App\Tests\WebTestCase;
+use Symfony\Component\HttpFoundation\Request;
 use Zenstruck\Foundry\Test\Factories;
 
 class AccountManagementTest extends WebTestCase
@@ -125,5 +128,27 @@ class AccountManagementTest extends WebTestCase
 
         // Then the response should not be successful
         static::assertResponseStatusCodeSame(400);
+    }
+
+    /** @test */
+    public function it_should_accept_a_valid_token()
+    {
+        // Given we have an account and we encode a token for him   
+        /** @var Account */
+        $account = AccountFactory::createOne()->object();
+
+        /** @var Authentication */
+        $auth = static::getContainer()->get(Authentication::class);
+
+        $token = $auth->encode($account);
+
+        // When we try to authenticate a request
+        $request = new Request();
+        $request->headers->set('Authorization', "Bearer " . $token);
+
+        $result = $auth->authenticate($request, $account->getApplication());
+
+        // Then we have informations
+        static::assertTrue($result);
     }
 }

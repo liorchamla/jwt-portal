@@ -56,7 +56,8 @@ class RoutesManagementTest extends WebTestCase
         // When you try to create a ProxyRoute
         $this->client->jsonRequest('POST', '/api/applications/' . $app->getId() . '/routes', [
             'pattern' => '/mock/pattern',
-            'isProtected' => true
+            'isProtected' => true,
+            "description" => ''
         ]);
 
         // Then it is successful

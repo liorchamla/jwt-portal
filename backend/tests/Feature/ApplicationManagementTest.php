@@ -41,11 +41,13 @@ class ApplicationManagementTest extends WebTestCase
             'routes' => [
                 [
                     'pattern' => '/clients/{id}',
-                    'clientPattern' => '/customers/{id}'
+                    'clientPattern' => '/customers/{id}',
+                    'description' => 'MOCK_DESCRIPTION_1'
                 ],
                 [
                     'pattern' => '/clients',
-                    'clientPattern' => '/customers'
+                    'clientPattern' => '/customers',
+                    'description' => 'MOCK_DESCRIPTION_2'
                 ],
             ]
         ]);
@@ -145,7 +147,8 @@ class ApplicationManagementTest extends WebTestCase
             "routes" => [
                 [
                     "pattern" => "MOCK_PATTERN",
-                    "clientPattern" => "MOCK_CLIENT_PATTERN"
+                    "clientPattern" => "MOCK_CLIENT_PATTERN",
+                    'description' => 'MOCK_DESCRIPTION_1'
                 ]
             ]
         ]);
