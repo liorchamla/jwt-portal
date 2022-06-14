@@ -13,6 +13,9 @@
             "src/Entity/.gitignore"
         ]
     },
+    "cebe/php-openapi": {
+        "version": "1.7.0"
+    },
     "dama/doctrine-test-bundle": {
         "version": "7.0",
         "recipe": {
@@ -43,6 +46,9 @@
     "doctrine/common": {
         "version": "3.3.0"
     },
+    "doctrine/data-fixtures": {
+        "version": "1.5.3"
+    },
     "doctrine/dbal": {
         "version": "3.3.6"
     },
@@ -61,6 +67,18 @@
             "config/packages/doctrine.yaml",
             "src/Entity/.gitignore",
             "src/Repository/.gitignore"
+        ]
+    },
+    "doctrine/doctrine-fixtures-bundle": {
+        "version": "3.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "3.0",
+            "ref": "1f5514cfa15b947298df4d771e694e578d4c204d"
+        },
+        "files": [
+            "src/DataFixtures/AppFixtures.php"
         ]
     },
     "doctrine/doctrine-migrations-bundle": {
@@ -111,6 +129,9 @@
     },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.12"
+    },
+    "justinrainbow/json-schema": {
+        "version": "5.2.12"
     },
     "laminas/laminas-code": {
         "version": "4.5.1"

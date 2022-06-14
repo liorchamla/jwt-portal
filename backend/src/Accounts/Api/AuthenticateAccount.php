@@ -5,6 +5,7 @@ namespace App\Accounts\Api;
 use App\Accounts\Dto\Credentials;
 use App\Entity\Application;
 use App\Http\Exception\ConstraintsViolationsException;
+use App\Http\JWT\Authentication;
 use App\Repository\AccountRepository;
 use Firebase\JWT\JWT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,7 +26,8 @@ class AuthenticateAccount
         private SerializerInterface $serializer,
         private ValidatorInterface $validator,
         private AccountRepository $accountRepository,
-        private UserPasswordHasherInterface $hasher
+        private UserPasswordHasherInterface $hasher,
+        private Authentication $auth
     ) {
     }
 
@@ -56,13 +58,7 @@ class AuthenticateAccount
             throw new HttpException(401, "Bad credentials");
         }
 
-        $key = 'example_key';
-        $payload = [
-            'username' => $account->getEmail(),
-            'iat' => time(),
-        ];
-
-        $jwt = JWT::encode($payload, $key, 'HS256');
+        $jwt = $this->auth->encode($account);
 
         return new JsonResponse(["token" => $jwt]);
     }

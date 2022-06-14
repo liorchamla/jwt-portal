@@ -35,6 +35,12 @@ class ProxyRoute
     #[ORM\Column(type: 'boolean')]
     private $isProtected = false;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private $method = "GET";
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $description;
+
     #[PrePersist]
     #[PreUpdate]
     public function lifeCycleCallbacks()
@@ -42,6 +48,15 @@ class ProxyRoute
         if (!$this->clientPattern) {
             $this->clientPattern = $this->pattern;
         }
+    }
+
+    public  function getClientPatternParameters()
+    {
+        $results = [];
+
+        preg_match_all("/{(.*?)}/", $this->clientPattern, $results);
+
+        return $results[1];
     }
 
     public function getId(): ?int
@@ -93,6 +108,30 @@ class ProxyRoute
     public function setIsProtected(bool $isProtected): self
     {
         $this->isProtected = $isProtected;
+
+        return $this;
+    }
+
+    public function getMethod(): ?string
+    {
+        return $this->method;
+    }
+
+    public function setMethod(string $method): self
+    {
+        $this->method = $method;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

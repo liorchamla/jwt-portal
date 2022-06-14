@@ -40,7 +40,11 @@ final class ProxyRouteFactory extends ModelFactory
         return [
             // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
             'pattern' => '/' . self::faker()->word() . '/' . self::faker()->word(),
-            'isProtected' => self::faker()->boolean()
+            'isProtected' => self::faker()->boolean(),
+            'description' => self::faker()->paragraph(),
+            'method' => self::faker()->randomElement([
+                "GET", "POST", "PUT", "DELETE"
+            ])
         ];
     }
 
