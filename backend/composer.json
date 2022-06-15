@@ -11,7 +11,6 @@
     "cebe/php-openapi": "^1.7",
     "doctrine/annotations": "^1.0",
     "doctrine/doctrine-bundle": "^2.6",
-    "doctrine/doctrine-fixtures-bundle": "^3.4",
     "doctrine/doctrine-migrations-bundle": "^3.2",
     "doctrine/orm": "^2.12",
     "firebase/php-jwt": "^6.2",
@@ -39,7 +38,9 @@
     "symfony/serializer": "6.0.*",
     "symfony/twig-bundle": "6.0.*",
     "symfony/validator": "6.0.*",
-    "symfony/yaml": "6.0.*"
+    "symfony/yaml": "6.0.*",
+    "zenstruck/foundry": "^1.19",
+    "doctrine/doctrine-fixtures-bundle": "^3.4"
   },
   "config": {
     "allow-plugins": {
@@ -100,7 +101,6 @@
     "phpunit/phpunit": "^9.5",
     "symfony/browser-kit": "6.0.*",
     "symfony/css-selector": "6.0.*",
-    "symfony/phpunit-bridge": "^6.0",
-    "zenstruck/foundry": "^1.19"
+    "symfony/phpunit-bridge": "^6.0"
   }
 }
