@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { tap } from 'rxjs';
+import { Subject, switchMap, tap } from 'rxjs';
 import { User } from './user-api';
 
 export type Application = {
@@ -9,6 +9,7 @@ export type Application = {
   description: string;
   baseUrl: string;
   routes?: any[];
+  accounts: any[];
 };
 
 @Injectable({
@@ -17,6 +18,20 @@ export type Application = {
 export class ApplicationApi {
   constructor(private http: HttpClient) {}
 
+  applications$ = new Subject<Application[]>();
+
+  delete(id: number) {
+    return this.http
+      .delete(
+        'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu47.gitpod.io/api/applications/' +
+          id
+      )
+      .pipe(
+        switchMap((_) => this.findAll()),
+        tap((apps) => this.applications$.next(apps))
+      );
+  }
+
   update(id: number, application: Application) {
     return this.http
       .put<Application>(
@@ -24,7 +39,10 @@ export class ApplicationApi {
           id,
         application
       )
-      .pipe(tap((app) => this.synchronizeForNewApplication(app)));
+      .pipe(
+        switchMap((_) => this.findAll()),
+        tap((apps) => this.applications$.next(apps))
+      );
   }
 
   create(application: Application) {
@@ -33,7 +51,10 @@ export class ApplicationApi {
         'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu47.gitpod.io/api/applications',
         application
       )
-      .pipe(tap((app) => this.synchronizeForNewApplication(app)));
+      .pipe(
+        switchMap((_) => this.findAll()),
+        tap((apps) => this.applications$.next(apps))
+      );
   }
 
   findAll() {
@@ -41,38 +62,13 @@ export class ApplicationApi {
       .get<Application[]>(
         'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu47.gitpod.io/api/applications'
       )
-      .pipe(tap((apps) => this.saveApplicationsCache(apps)));
+      .pipe(tap((apps) => this.applications$.next(apps)));
   }
 
-  saveApplicationsCache(applications: Application[]) {
-    window.localStorage.setItem('applications', JSON.stringify(applications));
-  }
-
-  getApplicationsData(): Application[] {
-    return JSON.parse(window.localStorage.getItem('applications') || '[]');
-  }
-
-  synchronizeForNewApplication(application: Application) {
-    const alreadyCachedApplications = this.getApplicationsData();
-    console.log(application);
-
-    const hasThisApplicationAlready = alreadyCachedApplications.some(
-      (a) => a.id === application.id
+  find(id: number) {
+    return this.http.get<Application>(
+      'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu47.gitpod.io/api/applications/' +
+        id
     );
-
-    if (hasThisApplicationAlready) {
-      const index = alreadyCachedApplications.findIndex(
-        (a) => a.id === application.id
-      );
-      alreadyCachedApplications[index] = application;
-    } else {
-      alreadyCachedApplications.push(application);
-    }
-
-    this.saveApplicationsCache(alreadyCachedApplications);
-  }
-
-  clearCache() {
-    window.localStorage.removeItem('applications');
   }
 }

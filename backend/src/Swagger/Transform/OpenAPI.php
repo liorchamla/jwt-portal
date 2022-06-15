@@ -96,7 +96,7 @@ class OpenAPI
 
             $details = $this->generateOperation(
                 "Operations",
-                $route->getDescription(),
+                $route->getDescription() . ($route->isProtected() ? " (protected by authentication)" : ""),
                 substr($route->getDescription(), 0, 40) . " ...",
                 $availableResponses
             );

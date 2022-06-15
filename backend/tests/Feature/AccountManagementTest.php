@@ -151,4 +151,28 @@ class AccountManagementTest extends WebTestCase
         // Then we have informations
         static::assertTrue($result);
     }
+
+    /** @test */
+    public function it_should_give_a_list_of_application_s_account()
+    {
+        // Given we have an application with several accounts
+        // And we are the owner of the application
+        $user = $this->makeUser(true);
+        $application = ApplicationFactory::createOne([
+            'owner' => $user
+        ]);
+
+        $accounts = AccountFactory::createMany(10, [
+            'application' => $application
+        ]);
+
+        // When we call /api/applications/{id}/accounts
+        $this->client->jsonRequest("GET", "/api/applications/" . $application->getId() . "/accounts");
+
+        // Then we get a list of accounts
+        static::assertResponseIsSuccessful();
+        $data = json_decode($this->client->getResponse()->getContent());
+
+        static::assertCount(10, $data);
+    }
 }

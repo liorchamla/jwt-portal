@@ -13,10 +13,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LoginComponent } from './pages/login/login.component';
 import { LoginFormComponent } from './pages/login/login-form.component';
-import { CreateApplicationComponent } from './pages/applications/create-application/create-application.component';
-import { ApplicationFormComponent } from './pages/applications/create-application/application-form.component';
+import { CreateOrEditApplicationComponent } from './pages/applications/create-or-edit/create-or-edit-application.component';
+import { ApplicationFormComponent } from './pages/applications/create-or-edit/application-form.component';
 import { JwtInterceptor } from './api/jwt-interceptor';
-import { RoutesFormComponent } from './pages/applications/create-application/routes-form.component';
+import { RoutesFormComponent } from './pages/applications/create-or-edit/routes-form.component';
+import { AccountsComponent } from './pages/applications/create-or-edit/accounts.component';
 
 @NgModule({
   declarations: [
@@ -29,9 +30,10 @@ import { RoutesFormComponent } from './pages/applications/create-application/rou
     PageComponent,
     LoginComponent,
     LoginFormComponent,
-    CreateApplicationComponent,
+    CreateOrEditApplicationComponent,
     ApplicationFormComponent,
     RoutesFormComponent,
+    AccountsComponent,
   ],
   imports: [
     BrowserModule,

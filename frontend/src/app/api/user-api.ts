@@ -66,8 +66,6 @@ export class UserApi {
   logout() {
     window.localStorage.removeItem('token');
 
-    this.applicationApi.clearCache();
-
     this.authToken = undefined;
   }
 

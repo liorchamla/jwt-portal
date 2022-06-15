@@ -33,12 +33,15 @@ class ProxyRoute
     private $clientPattern;
 
     #[ORM\Column(type: 'boolean')]
+    #[Groups(['application:read'])]
     private $isProtected = false;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['application:read'])]
     private $method = "GET";
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['application:read'])]
     private $description = "";
 
     #[PrePersist]

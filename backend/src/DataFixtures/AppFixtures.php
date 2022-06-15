@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Factory\AccountFactory;
 use App\Factory\ApplicationFactory;
 use App\Factory\ProxyRouteFactory;
 use App\Factory\UserFactory;
@@ -23,6 +24,10 @@ class AppFixtures extends Fixture
 
         foreach ($applications as $app) {
             ProxyRouteFactory::createMany(3, [
+                'application' => $app
+            ]);
+
+            AccountFactory::createMany(3, [
                 'application' => $app
             ]);
         }

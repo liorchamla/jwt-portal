@@ -14,11 +14,11 @@ class Account implements PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["account:read", "application:read"])]
+    #[Groups(["account:read", "account:list", "application:read"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["account:read", "application:read"])]
+    #[Groups(["account:read", "account:list", "application:read"])]
     #[Assert\NotBlank()]
     #[Assert\Email()]
     private $email;
