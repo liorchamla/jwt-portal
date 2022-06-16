@@ -3,10 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "gitpod-start": "npm run config -- --environment=gitpod && ng serve --host 0.0.0.0 --disable-host-check",
+    "start": "npm run config -- --environment=dev && ng serve",
+    "build": "npm run config -- --environment=prod && ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "npm run config -- --environment=test && ng test",
+    "config": "ts-node setenv.ts"
   },
   "private": true,
   "dependencies": {
@@ -20,15 +22,20 @@
     "@angular/router": "~13.3.0",
     "@ngneat/spectator": "^10.0.1",
     "bulma": "^0.9.4",
+    "dotenv": "^16.0.1",
+    "dotenv-expand": "^8.0.3",
     "jwt-decode": "^3.1.2",
     "rxjs": "~7.5.0",
+    "ts-node": "^10.8.1",
     "tslib": "^2.3.0",
+    "yargs": "^17.5.1",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~13.3.7",
     "@angular/cli": "~13.3.7",
     "@angular/compiler-cli": "~13.3.0",
+    "@ngx-env/builder": "^2.2.0",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
     "jasmine-core": "~4.0.0",

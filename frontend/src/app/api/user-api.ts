@@ -3,6 +3,9 @@ import { Injectable } from '@angular/core';
 import { switchMap, tap } from 'rxjs';
 import jwtDecode from 'jwt-decode';
 import { Application, ApplicationApi } from './application-api';
+import { environment } from 'src/environments/environment';
+
+const API_URL = environment.apiUrl;
 
 export type User = {
   username: string;
@@ -70,18 +73,12 @@ export class UserApi {
   }
 
   register(registration: Registration) {
-    return this.http.post(
-      'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu47.gitpod.io/api/register',
-      registration
-    );
+    return this.http.post(API_URL + '/api/register', registration);
   }
 
   login(credentials: Credentials) {
     return this.http
-      .post<{ token: string }>(
-        'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu47.gitpod.io/api/login',
-        credentials
-      )
+      .post<{ token: string }>(API_URL + '/api/login', credentials)
       .pipe(
         tap((data: { token: string }) => {
           this.authToken = data.token;
