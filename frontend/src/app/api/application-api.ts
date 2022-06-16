@@ -1,7 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject, switchMap, tap } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { User } from './user-api';
+
+const API_URL = environment.apiUrl;
 
 export type Application = {
   id?: number;
@@ -21,24 +24,15 @@ export class ApplicationApi {
   applications$ = new Subject<Application[]>();
 
   delete(id: number) {
-    return this.http
-      .delete(
-        'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu47.gitpod.io/api/applications/' +
-          id
-      )
-      .pipe(
-        switchMap((_) => this.findAll()),
-        tap((apps) => this.applications$.next(apps))
-      );
+    return this.http.delete(API_URL + '/api/applications/' + id).pipe(
+      switchMap((_) => this.findAll()),
+      tap((apps) => this.applications$.next(apps))
+    );
   }
 
   update(id: number, application: Application) {
     return this.http
-      .put<Application>(
-        'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu47.gitpod.io/api/applications/' +
-          id,
-        application
-      )
+      .put<Application>(API_URL + '/api/applications/' + id, application)
       .pipe(
         switchMap((_) => this.findAll()),
         tap((apps) => this.applications$.next(apps))
@@ -47,10 +41,7 @@ export class ApplicationApi {
 
   create(application: Application) {
     return this.http
-      .post<Application>(
-        'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu47.gitpod.io/api/applications',
-        application
-      )
+      .post<Application>(API_URL + '/api/applications', application)
       .pipe(
         switchMap((_) => this.findAll()),
         tap((apps) => this.applications$.next(apps))
@@ -59,16 +50,11 @@ export class ApplicationApi {
 
   findAll() {
     return this.http
-      .get<Application[]>(
-        'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu47.gitpod.io/api/applications'
-      )
+      .get<Application[]>(API_URL + '/api/applications')
       .pipe(tap((apps) => this.applications$.next(apps)));
   }
 
   find(id: number) {
-    return this.http.get<Application>(
-      'https://8000-liorchamla-jwtportal-qw83gvlw0k5.ws-eu47.gitpod.io/api/applications/' +
-        id
-    );
+    return this.http.get<Application>(API_URL + '/api/applications/' + id);
   }
 }
