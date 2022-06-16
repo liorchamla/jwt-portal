@@ -11,6 +11,7 @@
     "cebe/php-openapi": "^1.7",
     "doctrine/annotations": "^1.0",
     "doctrine/doctrine-bundle": "^2.6",
+    "doctrine/doctrine-fixtures-bundle": "^3.4",
     "doctrine/doctrine-migrations-bundle": "^3.2",
     "doctrine/orm": "^2.12",
     "firebase/php-jwt": "^6.2",
@@ -29,6 +30,7 @@
     "symfony/framework-bundle": "6.0.*",
     "symfony/http-client": "6.0.*",
     "symfony/maker-bundle": "^1.43",
+    "symfony/monolog-bundle": "^3.8",
     "symfony/property-access": "6.0.*",
     "symfony/property-info": "6.0.*",
     "symfony/proxy-manager-bridge": "6.0.*",
@@ -39,8 +41,7 @@
     "symfony/twig-bundle": "6.0.*",
     "symfony/validator": "6.0.*",
     "symfony/yaml": "6.0.*",
-    "zenstruck/foundry": "^1.19",
-    "doctrine/doctrine-fixtures-bundle": "^3.4"
+    "zenstruck/foundry": "^1.19"
   },
   "config": {
     "allow-plugins": {
@@ -84,7 +85,8 @@
       "@auto-scripts"
     ],
     "compile": [
-      "php bin/console doctrine:schema:update --force"
+      "php bin/console doctrine:schema:update --force",
+      "@php bin/console lexik:jwt:generate-keypair --overwrite --quiet --env prod"
     ]
   },
   "conflict": {
