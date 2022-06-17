@@ -20,7 +20,8 @@ class RouterTest extends KernelTestCase
 
         // And it has a route :
         $route = ProxyRouteFactory::createOne([
-            'pattern' => '/mock/pattern/{id}/{slug}',
+            'pattern' => 'https://mock.io/pattern/{id}/{slug}',
+            'clientPattern' => '/mock/pattern/{id}/{slug}',
             'application' => $app->object(),
             'isProtected' => true
         ]);
@@ -57,7 +58,8 @@ class RouterTest extends KernelTestCase
 
         // And it has several route :
         $route = ProxyRouteFactory::createOne([
-            'pattern' => '/mock/pattern/{id}/{slug}',
+            'pattern' => 'https://mock.io/pattern/{id}/{slug}',
+            'clientPattern' => '/mock/pattern/{id}/{slug}',
             'application' => $app->object(),
             'isProtected' => true
         ]);

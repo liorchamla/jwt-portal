@@ -119,4 +119,35 @@ class ProxyRequestTest extends WebTestCase
         // Then the response should be successful
         static::assertResponseIsSuccessful();
     }
+
+    /** @test */
+    public function it_should_send_a_request_with_the_same_http_method()
+    {
+        $mockHttpClient = $this->makeHttpClientMock();
+        $mockHttpClient->expects($this->once())
+            ->method('makeApiRequest')
+            ->with('https://mockapi.io/real/pattern/12', 'PUT')
+            ->willReturn(new JsonResponse(['customers' => 12], 200));
+
+        // Given we have an application and a route with PUT method
+        $account = AccountFactory::createOne();
+
+        $application = ApplicationFactory::createOne([
+            'accounts' => [$account]
+        ]);
+
+        $route = ProxyRouteFactory::createOne([
+            'application' => $application,
+            'isProtected' => false,
+            'clientPattern' => '/mock/pattern/{id}',
+            'pattern' => 'https://mockapi.io/real/pattern/{id}'
+        ]);
+
+        // When we call it through the proxy
+        $this->client->jsonRequest("PUT", "/a/{$account->getApplication()->getId()}/u/mock/pattern/12");
+
+
+        // Then the request should be sent with PUT method
+        static::assertResponseIsSuccessful();
+    }
 }

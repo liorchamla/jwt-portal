@@ -8,6 +8,7 @@ use cebe\openapi\spec\OpenApi as SpecOpenApi;
 use cebe\openapi\spec\Operation;
 use cebe\openapi\spec\Parameter;
 use cebe\openapi\spec\PathItem;
+use cebe\openapi\spec\Paths;
 use cebe\openapi\spec\Response;
 use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\SecurityScheme;
@@ -84,6 +85,8 @@ class OpenAPI
             'post' => $loginOperation
         ]);
 
+        $paths = [];
+
         foreach ($application->getRoutes() as $route) {
             $availableResponses = [
                 200 => "OK",
@@ -121,11 +124,20 @@ class OpenAPI
 
             $details->parameters = $parameters;
 
-            $operation = new PathItem([
-                strtolower($route->getMethod()) => $details
-            ]);
+            if (empty($paths[$route->getClientPattern()])) {
+                $paths[$route->getClientPattern()] = [];
+            }
 
-            $this->openApi->paths[$route->getClientPattern()] = $operation;
+            $paths[$route->getClientPattern()][strtolower($route->getMethod())] = $details;
+        }
+
+        foreach ($paths as $path => $operations) {
+            $pathItem = new PathItem([]);
+            foreach ($operations as $method => $operation) {
+                $pathItem->$method = $operation;
+            }
+
+            $this->openApi->paths[$path] = $pathItem;
         }
 
 
