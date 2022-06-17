@@ -1,7 +1,13 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 export function getRouteFormGroup(
-  route: any = { pattern: '', clientPattern: '' }
+  route: any = {
+    pattern: '',
+    clientPattern: '',
+    description: '',
+    isProtected: false,
+    method: 'GET',
+  }
 ): FormGroup {
   return new FormGroup({
     pattern: new FormControl(route.pattern, [Validators.required]),

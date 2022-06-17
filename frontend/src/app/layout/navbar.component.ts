@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Application, ApplicationApi } from '../api/application-api';
 import { UserApi } from '../api/user-api';
 
@@ -8,8 +7,8 @@ import { UserApi } from '../api/user-api';
   template: `
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-          <strong>✨ AuthPortal</strong>
+        <a class="navbar-item" routerLink="/">
+          <strong>✨ ApiAuthProxy</strong>
         </a>
 
         <a
@@ -58,13 +57,13 @@ import { UserApi } from '../api/user-api';
           <div class="navbar-item">
             <div class="buttons">
               <ng-container *ngIf="!isAuthenticated()">
-                <a class="button is-primary" routerLink="/register">
+                <a class="button is-primary" routerLink="/me/register">
                   <span class="icon">
                     <i class="fa-solid fa-user-plus"></i>
                   </span>
                   <span>Sign up</span>
                 </a>
-                <a class="button is-light" routerLink="/login">
+                <a class="button is-light" routerLink="/me/login">
                   <span class="icon">
                     <i class="fa-solid fa-right-to-bracket"></i>
                   </span>
@@ -101,9 +100,11 @@ export class NavbarComponent {
       (apps) => (this.applications = apps)
     );
 
-    this.applicationApi
-      .findAll()
-      .subscribe((apps) => (this.applications = apps));
+    if (this.userApi.isAuthenticated()) {
+      this.applicationApi
+        .findAll()
+        .subscribe((apps) => (this.applications = apps));
+    }
   }
 
   getUser() {

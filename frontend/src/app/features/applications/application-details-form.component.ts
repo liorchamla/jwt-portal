@@ -5,7 +5,7 @@ import { FormStore, FormStoreViewModel } from './form-store';
 import { getRouteFormGroup } from './form-utils';
 
 @Component({
-  selector: 'application-form',
+  selector: 'application-details-form',
   template: `
     <ng-container *ngIf="vm" [formGroup]="vm.formGroup">
       <h2 class="is-size-3 mb-3">Application data</h2>
@@ -33,7 +33,7 @@ import { getRouteFormGroup } from './form-utils';
   `,
   styles: [],
 })
-export class ApplicationFormComponent {
+export class ApplicationDetailsFormComponent {
   vm?: FormStoreViewModel;
 
   constructor(private formStore: FormStore) {}

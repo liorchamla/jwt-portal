@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormStore, FormStoreViewModel } from './form-store';
 
 @Component({
-  selector: 'app-accounts',
+  selector: 'application-accounts',
   template: `
     <h2 class="is-size-3">Application's accounts</h2>
     <table class="table is-fullwidth">
@@ -24,7 +24,7 @@ import { FormStore, FormStoreViewModel } from './form-store';
   `,
   styles: [],
 })
-export class AccountsComponent implements OnInit {
+export class ApplicationAccountsComponent implements OnInit {
   vm!: FormStoreViewModel;
 
   constructor(private formStore: FormStore) {}

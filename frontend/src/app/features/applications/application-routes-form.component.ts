@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { FormStore, FormStoreViewModel } from './form-store';
 import { getRouteFormGroup } from './form-utils';
 
 @Component({
-  selector: 'routes-form',
+  selector: 'application-routes-form',
   template: `
     <h2 class="is-size-3 mb-2">Manage routes</h2>
     <div
@@ -76,7 +76,7 @@ import { getRouteFormGroup } from './form-utils';
 
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <label for="pattern_{{ i }}" class="label">Real API URL</label>
+          <label for="pattern_{{ i }}" class="label">Description</label>
         </div>
         <div class="field-body">
           <div class="field">
@@ -138,7 +138,7 @@ import { getRouteFormGroup } from './form-utils';
   `,
   styles: [],
 })
-export class RoutesFormComponent implements OnInit {
+export class ApplicationRoutesFormComponent implements OnInit {
   vm!: FormStoreViewModel;
 
   constructor(private formStore: FormStore) {}
