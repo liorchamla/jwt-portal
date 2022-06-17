@@ -7,6 +7,9 @@ tasks:
     openMode: tab-before
     command: cd backend
 
+  - name: Dependencies
+    before: sh .gitpod-dependencies.sh
+
   - name: Frontend
     before: npm install -g @angular/cli
     init: cd frontend && npm install
