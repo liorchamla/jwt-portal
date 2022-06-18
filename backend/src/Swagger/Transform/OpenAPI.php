@@ -8,7 +8,6 @@ use cebe\openapi\spec\OpenApi as SpecOpenApi;
 use cebe\openapi\spec\Operation;
 use cebe\openapi\spec\Parameter;
 use cebe\openapi\spec\PathItem;
-use cebe\openapi\spec\Paths;
 use cebe\openapi\spec\Response;
 use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\SecurityScheme;
@@ -20,12 +19,9 @@ class OpenAPI
 {
     private SpecOpenApi $openApi;
 
-    public function transformToJson(Application $application, string $url)
+    private function initializeOpenApiSpecification(Application $application, string $baseUrl)
     {
-        $baseUrl = $url .  '/a/' . $application->getId() . '/u/';
-        $accountsUrl = $url .  '/a/' . $application->getId();
-
-        $this->openApi = new SpecOpenApi([
+        return new SpecOpenApi([
             'openapi' => '3.0.2',
             'info' => [
                 'title' => $application->getTitle(),
@@ -72,6 +68,14 @@ class OpenAPI
                 ]
             ])
         ]);
+    }
+
+    public function transformToJson(Application $application, string $url)
+    {
+        $baseUrl = $url .  '/a/' . $application->getId() . '/u/';
+        $accountsUrl = $url .  '/a/' . $application->getId();
+
+        $this->openApi = $this->initializeOpenApiSpecification($application, $baseUrl);
 
         $registerOperation = $this->generateOperation("Account management", "Create a new account and benefit of authentication functionnalities", "Create a new account", [201 => "Account created successfuly", 400 => "Validation of sent data failed"], "/components/schemas/UserObject", $accountsUrl);
 
