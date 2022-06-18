@@ -66,10 +66,14 @@ export class UserApi {
     return true;
   }
 
-  logout() {
+  logout(message: string = '') {
     window.localStorage.removeItem('token');
 
     this.authToken = undefined;
+
+    if (message) {
+      window.alert(message);
+    }
   }
 
   register(registration: Registration) {
