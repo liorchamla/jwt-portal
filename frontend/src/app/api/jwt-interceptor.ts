@@ -42,6 +42,7 @@ export class JwtInterceptor implements HttpInterceptor {
     );
   }
 
+  // TODO : Place all this logic inside an other Interceptor
   private handleExpiredToken(event: HttpEvent<any>) {
     if (
       event instanceof HttpErrorResponse &&
