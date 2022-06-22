@@ -60,7 +60,7 @@ export class ApplicationComponent implements OnInit {
     }
 
     this.applicationApi
-      .delete(this.application.id!)
+      .delete(this.application.slug!)
       .subscribe((_) => this.router.navigateByUrl('/'));
   }
 
@@ -78,7 +78,7 @@ export class ApplicationComponent implements OnInit {
   handleForm() {
     if (this.application) {
       this.applicationApi
-        .update(this.application.id!, this.vm?.formGroup.value)
+        .update(this.application.slug!, this.vm?.formGroup.value)
         .subscribe(console.log);
       return;
     }
@@ -94,12 +94,10 @@ export class ApplicationComponent implements OnInit {
 
     this.route.paramMap
       .pipe(
-        tap(console.log),
-        map((params) => params.get('id')),
-        filter((id) => id !== null),
-        map((id) => +id!),
-        mergeMap((id) =>
-          this.applicationApi.find(id).pipe(
+        map((params) => params.get('slug')),
+        filter((slug) => slug !== null),
+        mergeMap((slug) =>
+          this.applicationApi.find(slug!).pipe(
             catchError((err) => {
               return of(undefined);
             })
@@ -119,29 +117,5 @@ export class ApplicationComponent implements OnInit {
           this.formStore.application = app!;
         },
       });
-
-    // this.route.paramMap
-    //   .pipe(
-    //     map((params) => params.get('id')),
-    //     filter((id) => id !== null),
-    //     map((id) => +id!),
-    //     mergeMap((id) => this.applicationApi.find(id))
-    //     // filter((app) => {
-    //     //   return app !== undefined;
-    //     // })
-    //   )
-    //   .subscribe({
-    //     next: (app) => {
-    //       this.applicationNotFound = false;
-    //       this.application = app!;
-
-    //       this.formStore.application = app;
-    //     },
-    //     error: (error: HttpErrorResponse) => {
-    //       if (error.status === 404) {
-    //         this.applicationNotFound = true;
-    //       }
-    //     },
-    //   });
   }
 }

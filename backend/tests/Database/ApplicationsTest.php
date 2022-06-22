@@ -21,6 +21,7 @@ class ApplicationsTest extends KernelTestCase
 
 
         static::assertNotNull($application);
+        static::assertNotNull($application->getSlug());
     }
 
     /** @test */

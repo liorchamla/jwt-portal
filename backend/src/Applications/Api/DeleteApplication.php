@@ -21,7 +21,7 @@ class DeleteApplication
     ) {
     }
 
-    #[Route("/api/applications/{id}", name: "api_applications_delete", methods: ["DELETE"])]
+    #[Route("/api/applications/{slug}", name: "api_applications_delete", methods: ["DELETE"])]
     public function __invoke(Application $app = null)
     {
         $user = $this->security->getUser();

@@ -34,6 +34,12 @@ services:
         event: "prePersist"
         entity: 'App\Entity\Application'
 
+  App\Applications\Storage\ApplicationSlugListener:
+    tags:
+      - name: "doctrine.orm.entity_listener"
+        event: "prePersist"
+        entity: 'App\Entity\Application'
+
   App\Accounts\Storage\AccountPasswordHasherListener:
     tags:
       - name: "doctrine.orm.entity_listener"

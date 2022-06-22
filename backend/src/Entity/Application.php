@@ -47,6 +47,10 @@ class Application
     #[Groups('application:read')]
     private $accounts;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups('application:read')]
+    private $slug;
+
     public function __construct()
     {
         $this->routes = new ArrayCollection();
@@ -155,6 +159,18 @@ class Application
                 $account->setApplication(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

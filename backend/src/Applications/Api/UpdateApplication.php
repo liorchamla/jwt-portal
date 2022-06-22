@@ -25,7 +25,7 @@ class UpdateApplication
     ) {
     }
 
-    #[Route("/api/applications/{id}", name: "api_applications_update", methods: ["PUT"])]
+    #[Route("/api/applications/{slug}", name: "api_applications_update", methods: ["PUT"])]
     public function __invoke(Request $request, Application $application = null)
     {
         if (!$application) {

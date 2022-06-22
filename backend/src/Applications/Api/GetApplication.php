@@ -19,7 +19,7 @@ class GetApplication
     ) {
     }
 
-    #[Route("/api/applications/{id}", name: "api_applications_get", methods: ["GET"])]
+    #[Route("/api/applications/{slug}", name: "api_applications_get", methods: ["GET"])]
     public function __invoke(Application $app = null)
     {
         $user = $this->security->getUser();

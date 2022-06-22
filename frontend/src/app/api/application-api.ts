@@ -8,6 +8,7 @@ const API_URL = environment.apiUrl;
 
 export type Application = {
   id?: number;
+  slug?: string;
   title: string;
   description: string;
   baseUrl: string;
@@ -23,16 +24,16 @@ export class ApplicationApi {
 
   applications$ = new Subject<Application[]>();
 
-  delete(id: number) {
-    return this.http.delete(API_URL + '/api/applications/' + id).pipe(
+  delete(slug: string) {
+    return this.http.delete(API_URL + '/api/applications/' + slug).pipe(
       switchMap((_) => this.findAll()),
       tap((apps) => this.applications$.next(apps))
     );
   }
 
-  update(id: number, application: Application) {
+  update(slug: string, application: Application) {
     return this.http
-      .put<Application>(API_URL + '/api/applications/' + id, application)
+      .put<Application>(API_URL + '/api/applications/' + slug, application)
       .pipe(
         switchMap((_) => this.findAll()),
         tap((apps) => this.applications$.next(apps))
@@ -54,7 +55,7 @@ export class ApplicationApi {
       .pipe(tap((apps) => this.applications$.next(apps)));
   }
 
-  find(id: number) {
-    return this.http.get<Application>(API_URL + '/api/applications/' + id);
+  find(slug: string) {
+    return this.http.get<Application>(API_URL + '/api/applications/' + slug);
   }
 }

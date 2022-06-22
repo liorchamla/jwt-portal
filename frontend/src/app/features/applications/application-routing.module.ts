@@ -15,7 +15,7 @@ const routes: Routes = [
     ],
   },
   {
-    path: ':id',
+    path: ':slug',
     component: ApplicationComponent,
     children: [
       { path: '', component: ApplicationDetailsFormComponent },
