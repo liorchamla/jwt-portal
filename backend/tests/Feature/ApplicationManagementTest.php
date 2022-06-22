@@ -117,7 +117,7 @@ class ApplicationManagementTest extends WebTestCase
         ]);
 
         // When we call /api/applications in GET
-        $this->client->jsonRequest("GET", "/api/applications/" . $application->getId());
+        $this->client->jsonRequest("GET", "/api/applications/" . $application->getSlug());
 
         // Then we should receive applications
         json_decode($this->client->getResponse()->getContent());
@@ -141,7 +141,7 @@ class ApplicationManagementTest extends WebTestCase
         ]);
 
         // When we call /api/applications/{id} in PUT
-        $this->client->jsonRequest("PUT", "/api/applications/" . $application->getId(), [
+        $this->client->jsonRequest("PUT", "/api/applications/" . $application->getSlug(), [
             "title" => "MOCK_TITLE",
             "description" => "MOCK_DESCRIPTION",
             "routes" => [
@@ -157,6 +157,7 @@ class ApplicationManagementTest extends WebTestCase
         static::assertCount(1, $application->getRoutes());
         static::assertEquals("MOCK_TITLE", $application->getTitle());
         static::assertEquals("MOCK_DESCRIPTION", $application->getDescription());
+        static::assertNotNull($application->getSlug());
     }
 
     /** @test */
@@ -171,7 +172,7 @@ class ApplicationManagementTest extends WebTestCase
         $id = $application->getId();
 
         // When we call /api/applications/{id} in PUT
-        $this->client->jsonRequest("DELETE", "/api/applications/" . $application->getId());
+        $this->client->jsonRequest("DELETE", "/api/applications/" . $application->getSlug());
 
         // Then the application and routes should have been updated
         static::assertResponseIsSuccessful();
