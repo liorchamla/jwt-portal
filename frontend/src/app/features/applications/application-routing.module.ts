@@ -10,17 +10,47 @@ const routes: Routes = [
     path: 'create',
     component: ApplicationComponent,
     children: [
-      { path: '', component: ApplicationDetailsFormComponent },
-      { path: 'routes', component: ApplicationRoutesFormComponent },
+      {
+        path: '',
+        component: ApplicationDetailsFormComponent,
+        data: {
+          title: "Setup application's data",
+        },
+      },
+      {
+        path: 'routes',
+        component: ApplicationRoutesFormComponent,
+        data: {
+          title: "Setup application's routes",
+        },
+      },
     ],
   },
   {
     path: ':slug',
     component: ApplicationComponent,
     children: [
-      { path: '', component: ApplicationDetailsFormComponent },
-      { path: 'routes', component: ApplicationRoutesFormComponent },
-      { path: 'accounts', component: ApplicationAccountsComponent },
+      {
+        path: '',
+        component: ApplicationDetailsFormComponent,
+        data: {
+          title: "Edit application's data",
+        },
+      },
+      {
+        path: 'routes',
+        component: ApplicationRoutesFormComponent,
+        data: {
+          title: "Edit application's routes",
+        },
+      },
+      {
+        path: 'accounts',
+        component: ApplicationAccountsComponent,
+        data: {
+          title: "See application's accounts",
+        },
+      },
     ],
   },
 ];
