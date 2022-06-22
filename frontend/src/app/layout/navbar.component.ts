@@ -40,7 +40,7 @@ import { UserApi } from '../api/user-api';
             <div class="navbar-dropdown">
               <a
                 class="navbar-item"
-                [routerLink]="['/applications', app.id]"
+                [routerLink]="['/applications', app.slug]"
                 *ngFor="let app of applications"
               >
                 {{ app.title }}
